@@ -1,6 +1,6 @@
 import styles from "./page.module.css";
 import Link from "next/link";
-import VerticalStack from "@/shared/VerticalStack";
+import VerticalStack from "../shared/VerticalStack";
 
 export default function Home() {
   return (

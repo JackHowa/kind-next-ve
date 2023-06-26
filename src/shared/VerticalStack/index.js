@@ -1,6 +1,6 @@
-import { container } from "@/utils/container.css";
+import { container } from "../../utils/container.css";
 import { flexContainer } from "./app.css";
-import { framing } from "@/utils/framing-container.css";
+import { framing } from "../../utils/framing-container.css";
 
 export default function VerticalStack({
   children,
