@@ -1,9 +1,11 @@
+"use server";
+// this is a server action so it's ok to keys
+
 import { auth } from "google-auth-library";
 
 async function getIdToken() {
   // https://cloud.google.com/nodejs/docs/reference/google-auth-library/latest#loading-credentials-from-environment-variables
 
-  console.log(process.env);
   const authObject = {
     // Non-NEXT_PUBLIC_ environment variables are only available in the Node.js environment, meaning they aren't accessible to the browser (the client runs in a different environment).
     // https://nextjs.org/docs/app/building-your-application/configuring/environment-variables#bundling-environment-variables-for-the-browser
@@ -24,7 +26,7 @@ async function getIdToken() {
   return accessToken.token;
 }
 
-async function fetchData() {
+async function fetchData(input) {
   const MODEL_ID = process.env.MODEL_ID;
   const PROJECT_ID = process.env.PROJECT_ID;
 
@@ -36,7 +38,7 @@ async function fetchData() {
     instances: [
       {
         context:
-          "You are a friendly tutor coaching someone on how to give co-workers feedback in a professional setting. Evaluate the provided statement and provide a suggestion for that includes whether this statement is effective feedback and how it could be improved. Make sure to include emojis.Feedback should be: be specific; be prescriptive; be actionable; show references or evidence; be kind. Do not provide any further [user] inputs.", // still seeing [user] after?
+          "You are a friendly tutor coaching someone on how to give co-workers feedback in a professional setting. Evaluate the provided statement and provide a suggestion for that includes whether this statement is effective feedback and how it could be improved. Make sure to include emojis.Feedback should be: be specific; be prescriptive; be actionable; show references or evidence; be kind. Do not provide any further [user] inputs.", // still seeing [user] after sometimes?
         examples: [
           {
             input: {
@@ -50,25 +52,36 @@ async function fetchData() {
           {
             input: {
               content:
-                "John did not set the proper expectations with his stakeholders on his project which caused another team to miss an important deadline. In the future, he should set clear expectations and adjust them quickly if they change.",
+                "Jane did not set the proper expectations with his stakeholders on his project which caused another team to miss an important deadline. In the future, he should set clear expectations and adjust them quickly if they change.",
+            },
+            output: {
+              // changed training data to Jane so that the output is not always John
+              content:
+                "This is good feedback, well done! 👍 You provided specific, kind, feedback and also included guidance for how Jane could improve in the future.",
+            },
+          },
+          // abuse case
+          {
+            input: {
+              content: "Jeff's hair is bad",
             },
             output: {
               content:
-                "This is good feedback, well done! 👍 You provided specific, kind, feedback and also included guidance for how John could improve in the future.",
+                "This is not kind. While Kind AI is still learning, we hope that you can be considerate to your co-workers. It is unprofessional in a work setting to comment on people's appearances. Please try again. 🙏",
             },
           },
         ],
         messages: [
           {
             author: "user",
-            content: "Jack's PR was bad", // take this input
+            content: input, // take this user input
           },
         ],
       },
     ],
     parameters: {
       temperature: 0.3,
-      maxOutputTokens: 200,
+      maxOutputTokens: 128,
       topP: 0.8,
       topK: 40,
     },
@@ -93,11 +106,9 @@ async function fetchData() {
   return responseJson.predictions[0].candidates[0].content;
 }
 
-export default async function Feedback() {
-  // make fetch call to google cloud to ai platform
-  const response = await fetchData();
-
-  // todo: make this dynamic
-  // todo: style this with like a text bubble or something
-  return <p>{response}</p>;
+async function getReponse(input) {
+  const aiResponse = await fetchData(input);
+  return aiResponse;
 }
+
+export default getReponse;
