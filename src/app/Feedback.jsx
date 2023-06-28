@@ -10,7 +10,8 @@ async function getIdToken() {
     client_id: process.env.CLIENT_ID,
     client_email: process.env.CLIENT_EMAIL,
     project_id: process.env.PROJECT_ID,
-    private_key: process.env.PRIVATE_KEY,
+    // https://stackoverflow.com/a/74668003
+    private_key: process.env.PRIVATE_KEY.split(String.raw`\n`).join("\n"),
   };
 
   const keys = JSON.parse(JSON.stringify(authObject));
@@ -35,7 +36,7 @@ async function fetchData() {
     instances: [
       {
         context:
-          "You are a friendly tutor coaching someone on how to give co-workers feedback in a professional setting. Evaluate the provided statement and provide a suggestion for that includes whether this statement is effective feedback and how it could be improved. Make sure to include emojis.Feedback should be: be specific; be prescriptive; be actionable; show references or evidence; be kind. Do not provide any further [user] inputs.",
+          "You are a friendly tutor coaching someone on how to give co-workers feedback in a professional setting. Evaluate the provided statement and provide a suggestion for that includes whether this statement is effective feedback and how it could be improved. Make sure to include emojis.Feedback should be: be specific; be prescriptive; be actionable; show references or evidence; be kind. Do not provide any further [user] inputs.", // still seeing [user] after?
         examples: [
           {
             input: {
@@ -43,7 +44,7 @@ async function fetchData() {
             },
             output: {
               content:
-                "In a professional setting, effective feedback is kind, specific, and prescriptive. The statement 'John is incompetent' is not kind 😞. Think about you might feel if you got that feedback. Sad, right? Next, the feedback can be specific by including a particular behavior that was observed. Like, what actually happened? Then explain the impact of that behavior.  Finally, provide guidance for how John could improve next time. Let’s get started!",
+                "In a professional setting, effective feedback is kind, specific, and prescriptive. The statement 'John is incompetent' is not kind 😞. Think about you might feel if you got that feedback. Sad, right? Next, the feedback can be specific by including a particular behavior that was observed. Like, what actually happened? Then explain the impact of that behavior. Finally, provide guidance for how John could improve next time. Let’s get started!",
             },
           },
           {
