@@ -2,6 +2,8 @@ import { container } from "../../utils/container.css";
 import { flexContainer } from "./app.css";
 import { framing } from "../../utils/framing-container.css";
 
+// todo: make this ts to mimic eds
+// will get the typehints then from its consumers
 export default function VerticalStack({
   children,
   as = "div",
