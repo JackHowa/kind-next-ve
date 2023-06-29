@@ -90,7 +90,8 @@ async function fetchData(input) {
       },
     ],
     parameters: {
-      temperature: 0.3,
+      temperature: 0.2, // it is literally giving me back the output exactly. While this can be good, it can also be bad. I want to add some randomness to the output. Otherwise where's the llm?
+      // it does not seem to be adjusting outside of this range
       maxOutputTokens: 128,
       topP: 0.8,
       topK: 40,
