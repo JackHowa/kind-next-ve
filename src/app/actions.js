@@ -70,6 +70,16 @@ async function fetchData(input) {
                 "This is not kind. While Kind AI is still learning, we hope that you can be considerate to your co-workers. It is unprofessional in a work setting to comment on people's appearances. Please try again. 🙏",
             },
           },
+          {
+            input: {
+              // want to handle "compliments" too about physical appearance
+              content: "Lauren looks cool with her their haircut.",
+            },
+            output: {
+              content:
+                "It is unprofessional in a work setting to comment on people's appearances. Please try again. 🙏",
+            },
+          },
         ],
         messages: [
           {
